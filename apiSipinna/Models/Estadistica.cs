@@ -23,4 +23,5 @@ public class Estadistica(){
     public Int32? fecha {get; set;}
     
     public float? dato {get; set;}
+
 }

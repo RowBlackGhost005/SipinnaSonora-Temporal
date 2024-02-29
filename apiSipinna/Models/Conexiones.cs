@@ -22,7 +22,33 @@ public class Conexiones : DbContext{
 
     protected override void OnModelCreating(ModelBuilder modelBuilder){
         //configurar tablas
-        
+
+      modelBuilder.Entity<Estadistica>()
+       .HasOne<Categoria>()
+       .WithMany()  
+       .HasForeignKey(e => e.categoria);
+
+      modelBuilder.Entity<Estadistica>()
+       .HasOne<Cobertura>()
+       .WithMany()  
+       .HasForeignKey(e => e.cobertura);
+       
+        modelBuilder.Entity<Estadistica>()
+       .HasOne<Edades>()
+       .WithMany()  
+       .HasForeignKey(e => e.edades);
+
+       modelBuilder.Entity<Estadistica>()
+       .HasOne<Fecha>()
+       .WithMany()  
+       .HasForeignKey(e => e.fecha);
+
+       modelBuilder.Entity<Estadistica>()
+       .HasOne<Lugar>()
+       .WithMany()  
+       .HasForeignKey(e => e.lugar);
+
+        /*
         modelBuilder.Entity<Categoria>()
         .HasMany<Estadistica>()
         .WithOne();
@@ -42,7 +68,7 @@ public class Conexiones : DbContext{
         modelBuilder.Entity<Lugar>()
         .HasMany<Estadistica>()
         .WithOne();
-
+       */
         modelBuilder.Entity<Estadistica>().Property(e => e.dato);
     }
 

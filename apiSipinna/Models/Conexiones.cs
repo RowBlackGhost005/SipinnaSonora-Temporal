@@ -19,4 +19,32 @@ public class Conexiones : DbContext{
     public DbSet<Fecha> fecha {get;set;} = null!;
 
     public DbSet<Lugar> lugar {get;set;} = null!;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder){
+        //configurar tablas
+        
+        modelBuilder.Entity<Categoria>()
+        .HasMany<Estadistica>()
+        .WithOne();
+
+        modelBuilder.Entity<Cobertura>()
+        .HasMany<Estadistica>()
+        .WithOne();
+
+        modelBuilder.Entity<Edades>()
+        .HasMany<Estadistica>()
+        .WithOne();
+
+        modelBuilder.Entity<Fecha>()
+        .HasMany<Estadistica>()
+        .WithOne();
+
+        modelBuilder.Entity<Lugar>()
+        .HasMany<Estadistica>()
+        .WithOne();
+
+        modelBuilder.Entity<Estadistica>().Property(e => e.dato);
+    }
+
+
 }

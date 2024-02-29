@@ -8,4 +8,7 @@ public class Lugar(){
     public Int32 idLugar {get; set;}
 
     public String? entidad {get; set;}
+
+    //public ICollection<Estadistica> estadisticas{get; } = new List<Estadistica>();
+
 }

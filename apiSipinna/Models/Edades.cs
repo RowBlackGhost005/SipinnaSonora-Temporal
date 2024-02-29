@@ -9,5 +9,4 @@ public class Edades(){
 
     public String? rangoEdades {get; set;}
 
-
 }

@@ -20,8 +20,6 @@ namespace apiSipinna.Controllers
             _context = context;
         }
 
-
-        //GET: api/Estadistica/datos
         [HttpGet]
         [Route("datos")]
         public async Task<ActionResult<IEnumerable<EstadisticaConsulta>>> GetestadisticasDatos()
@@ -47,7 +45,7 @@ namespace apiSipinna.Controllers
             List<EstadisticaConsulta> resultados = await consulta.ToListAsync();       
 
             return resultados;
-        } 
+        }
 
         // GET: api/Estadistica
         [HttpGet]

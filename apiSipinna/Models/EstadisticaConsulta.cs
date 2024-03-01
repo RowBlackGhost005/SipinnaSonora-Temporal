@@ -1,12 +1,12 @@
 namespace apiSipinna.Models;
 public class EstadisticaConsulta
 {
-    public string? Dominio { get; set; }
-    public string? Categoria { get; set; }
-    public string? Indicador { get; set; }
-    public string? Poblacion { get; set; }
-    public string? RangoEdades { get; set; }
-    public string? Entidad { get; set; }
-    public int? Anio { get; set; }
-    public float? Dato { get; set; }
+    public required string Dominio { get; set; }
+    public required string Categoria { get; set; }
+    public required string Indicador { get; set; }
+    public required string Poblacion { get; set; }
+    public required string RangoEdades { get; set; }
+    public required string Entidad { get; set; }
+    public required int Anio { get; set; }
+    public required float Dato { get; set; }
 }

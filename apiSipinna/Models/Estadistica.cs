@@ -1,27 +1,35 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace apiSipinna.Models;
 
+[Table("estadistica")]
 public class Estadistica(){
     
     [Key]
     public Int32 idestadistica {get; set;}
 
-    //public Cobertura? Cobertura {get; set;} = null!;
-    public Int32? cobertura {get; set;} 
+    //public int cobertura { get; set; }
+    [ForeignKey("cobertura")]
+    public required Cobertura Cobertura { get; set; }
 
-    //public Categoria? Categoria {get; set;} = null!;
-    public Int32? categoria {get; set;}
+    //public int categoria { get; set; }
+    [ForeignKey("categoria")]
+    public required Categoria Categoria{ get; set; }
 
-    //public Edades? Edades {get; set;} = null!;
-    public Int32? edades {get; set;}
+    //public int edades { get; set; }
+    [ForeignKey("edades")]
+    public required Edades Edades { get; set; }
 
-    //public Lugar? Lugar {get; set;} = null!;
-    public Int32? lugar {get; set;}
+    //public int lugar { get; set; }
+    [ForeignKey("lugar")]
+    public required Lugar Lugar { get; set; }
 
-    //public Fecha? Fecha {get; set;} = null!;
-    public Int32? fecha {get; set;}
-    
-    public float? dato {get; set;}
+    //public int fecha { get; set; }
+    [ForeignKey("fecha")]
+    public required Fecha Fecha { get; set; }
+
+    public required float dato { get; set; }
 
 }

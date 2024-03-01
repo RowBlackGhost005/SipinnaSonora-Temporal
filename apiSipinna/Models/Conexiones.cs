@@ -9,67 +9,32 @@ public class Conexiones : DbContext{
 
     }
 
-    public DbSet<Estadistica> estadistica {get; set;} = null!;
-    public DbSet<Categoria> categoria {get;set;} = null!;
+    public DbSet<Estadistica> estadisticaTbl {get; set;} = null!;
+    public DbSet<Categoria> categoriaTbl {get;set;} = null!;
 
-    public DbSet<Cobertura> cobertura {get;set;} = null!;
+    public DbSet<Cobertura> coberturaTbl {get;set;} = null!;
 
-    public DbSet<Edades> edades {get;set;} = null!;
+    public DbSet<Edades> edadesTbl {get;set;} = null!;
 
-    public DbSet<Fecha> fecha {get;set;} = null!;
+    public DbSet<Fecha> fechaTbl {get;set;} = null!;
 
-    public DbSet<Lugar> lugar {get;set;} = null!;
+    public DbSet<Lugar> lugarTbl {get;set;} = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder){
         //configurar tablas
+        modelBuilder.Entity<Estadistica>().ToTable("estadistica");
+        modelBuilder.Entity<Categoria>().ToTable("categoria");
+        modelBuilder.Entity<Cobertura>().ToTable("cobertura");
+        modelBuilder.Entity<Edades>().ToTable("edades");
+        modelBuilder.Entity<Fecha>().ToTable("fecha");
+        modelBuilder.Entity<Lugar>().ToTable("lugar");
 
-      modelBuilder.Entity<Estadistica>()
-       .HasOne<Categoria>()
-       .WithMany()  
-       .HasForeignKey(e => e.categoria);
-
-      modelBuilder.Entity<Estadistica>()
-       .HasOne<Cobertura>()
-       .WithMany()  
-       .HasForeignKey(e => e.cobertura);
-       
-        modelBuilder.Entity<Estadistica>()
-       .HasOne<Edades>()
-       .WithMany()  
-       .HasForeignKey(e => e.edades);
-
-       modelBuilder.Entity<Estadistica>()
-       .HasOne<Fecha>()
-       .WithMany()  
-       .HasForeignKey(e => e.fecha);
-
-       modelBuilder.Entity<Estadistica>()
-       .HasOne<Lugar>()
-       .WithMany()  
-       .HasForeignKey(e => e.lugar);
-
-        /*
-        modelBuilder.Entity<Categoria>()
-        .HasMany<Estadistica>()
-        .WithOne();
-
-        modelBuilder.Entity<Cobertura>()
-        .HasMany<Estadistica>()
-        .WithOne();
-
+        //valor unico 
         modelBuilder.Entity<Edades>()
-        .HasMany<Estadistica>()
-        .WithOne();
-
-        modelBuilder.Entity<Fecha>()
-        .HasMany<Estadistica>()
-        .WithOne();
+            .HasAlternateKey(c => c.rangoEdades);
 
         modelBuilder.Entity<Lugar>()
-        .HasMany<Estadistica>()
-        .WithOne();
-       */
-        modelBuilder.Entity<Estadistica>().Property(e => e.dato);
+            .HasAlternateKey(c => c.entidad);    
     }
 
 

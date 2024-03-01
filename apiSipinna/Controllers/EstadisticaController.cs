@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using apiSipinna.Models;
-using Newtonsoft.Json.Linq;
 
 namespace apiSipinna.Controllers
 {
@@ -19,6 +18,19 @@ namespace apiSipinna.Controllers
         public EstadisticaController(Conexiones context)
         {
             _context = context;
+        }
+
+        // GET: api/Estadistica
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Estadistica>>> GetestadisticaTbl()
+        {
+            return await _context.estadisticaTbl
+                .Include(e => e.Categoria)
+                .Include(e => e.Cobertura)
+                .Include(e => e.Edades)
+                .Include(e => e.Lugar)
+                .Include(e => e.Fecha)
+                .ToListAsync();
         }
 
         [HttpGet]
@@ -48,18 +60,11 @@ namespace apiSipinna.Controllers
             return resultados;
         }
 
-        // GET: api/Estadistica
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Estadistica>>> Getestadistica()
-        {
-            return await _context.estadistica.ToListAsync();
-        }
-
         // GET: api/Estadistica/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Estadistica>> GetEstadistica(int id)
         {
-            var estadistica = await _context.estadistica.FindAsync(id);
+            var estadistica = await _context.estadisticaTbl.FindAsync(id);
 
             if (estadistica == null)
             {
@@ -102,100 +107,26 @@ namespace apiSipinna.Controllers
 
         // POST: api/Estadistica
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        /*
         [HttpPost]
         public async Task<ActionResult<Estadistica>> PostEstadistica(Estadistica estadistica)
         {
-            _context.estadistica.Add(estadistica);
+            _context.estadisticaTbl.Add(estadistica);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetEstadistica", new { id = estadistica.idestadistica }, estadistica);
-        }
-        */
-
-        
-        [HttpPost]
-        public async Task<ActionResult<Estadistica>> Post([FromBody] EstadisticaPost estadisticaDto)
-        {
-            try
-            {
-
-               var indicador = estadisticaDto.Indicador;
-               var alcance = estadisticaDto.Alcance;
-               var poblacion = estadisticaDto.Poblacion;
-               var entidad = estadisticaDto.Entidad;
-               var rangoEdades = estadisticaDto.RangoEdades;
-               var anio = estadisticaDto.Anio;
-               var mes = estadisticaDto.Mes;
-               var datoEst = estadisticaDto.DatoEst;
-            
-
-                var categoria = _context.categoria.FirstOrDefault(a => a.indicador == indicador);
-                if (categoria == null)
-                {
-                    return NotFound("No se encontro referencia a al indicador introducido");
-                }
-
-                
-                var cobertura = _context.cobertura.FirstOrDefault(b => b.alcance == alcance && b.poblacion == poblacion);
-                if (cobertura == null)
-                {
-                    return NotFound("No se encontro referencia a la cobertura introducida");
-                }
-
-                var lugar = _context.lugar.FirstOrDefault(b => b.entidad == entidad);
-                if (lugar == null)
-                {
-                    return NotFound("No se encontro referencia al lugar introducido");
-                }
-
-                var edades = _context.edades.FirstOrDefault(b => b.rangoEdades == rangoEdades);
-                if (edades == null)
-                {
-                    return NotFound("No se encontro referencia al rango de edades introducido");
-                }
-
-                var fecha = _context.fecha.FirstOrDefault(b => b.anio == anio && b.mes == mes);
-                if (fecha == null)
-                {
-                    return NotFound("No se encontro referencia a la fecha introducida");
-                }
-
-                var datoEstadistico = new Estadistica
-                {
-                    categoria = categoria.idCategoria,
-                    cobertura = cobertura.idCobertura,
-                    lugar = lugar.idLugar,
-                    edades = edades.idedades,
-                    fecha = fecha.idfecha,
-                    dato = datoEst
-                };
-
-                Console.WriteLine("texto es: "+datoEstadistico.dato);
-
-                // Guardar el nuevo registro en la base de datos
-                _context.estadistica.Add(datoEstadistico);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { mensaje = "Registro creado"});
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
-            }
         }
 
         // DELETE: api/Estadistica/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEstadistica(int id)
         {
-            var estadistica = await _context.estadistica.FindAsync(id);
+            var estadistica = await _context.estadisticaTbl.FindAsync(id);
             if (estadistica == null)
             {
                 return NotFound();
             }
 
-            _context.estadistica.Remove(estadistica);
+            _context.estadisticaTbl.Remove(estadistica);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -203,7 +134,7 @@ namespace apiSipinna.Controllers
 
         private bool EstadisticaExists(int id)
         {
-            return _context.estadistica.Any(e => e.idestadistica == id);
+            return _context.estadisticaTbl.Any(e => e.idestadistica == id);
         }
     }
 }

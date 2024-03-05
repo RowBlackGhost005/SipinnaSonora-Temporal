@@ -9,6 +9,7 @@ builder.Services.AddControllers();
 //conexion a base de datos
 builder.Services.AddDbContext<Conexiones>(opt =>
     opt.UseMySQL(cadena));
+//builder.services.AddScoped<EstadisticaDAO>();    
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using apiSipinna.Models;
 
+
 namespace apiSipinna.Controllers
 {
     [Route("api/[controller]")]
@@ -14,23 +15,27 @@ namespace apiSipinna.Controllers
     public class EstadisticaController : ControllerBase
     {
         private readonly Conexiones _context;
-
+        private readonly EstadisticaDAO estadisticaDAO;
         public EstadisticaController(Conexiones context)
         {
             _context = context;
+            estadisticaDAO = new EstadisticaDAO(_context);
         }
 
         // GET: api/Estadistica
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Estadistica>>> GetestadisticaTbl()
         {
-            return await _context.estadisticaTbl
-                .Include(e => e.Categoria)
-                .Include(e => e.Cobertura)
-                .Include(e => e.Edades)
-                .Include(e => e.Lugar)
-                .Include(e => e.Fecha)
-                .ToListAsync();
+            try{
+
+              var listaEstadistica = await estadisticaDAO.getEstadistica();
+
+              return Ok(listaEstadistica);
+
+            }catch(Exception ex){
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
+
         }
 /*
         [HttpGet]
@@ -123,72 +128,31 @@ namespace apiSipinna.Controllers
         {
             try
             {
+                Estadistica estadistica = await estadisticaDAO.agregarEstadistica(estadisticaDto);
 
-               var indicador = estadisticaDto.Indicador;
-               var alcance = estadisticaDto.Alcance;
-               var poblacion = estadisticaDto.Poblacion;
-               var entidad = estadisticaDto.Entidad;
-               var rangoEdades = estadisticaDto.RangoEdades;
-               var anio = estadisticaDto.Anio ?? 0;
-               var mes = estadisticaDto.Mes;
-               float datoEst = estadisticaDto.DatoEst ?? 0.0f;
-            
-                 
-                var categoria = _context.categoriaTbl.FirstOrDefault(a => a.indicador == indicador);
-                if (categoria == null)
-                {
-                    return NotFound("No se encontro referencia a al indicador introducido");
-                }
-
-                
-                var cobertura = _context.coberturaTbl.FirstOrDefault(b => b.alcance == alcance && b.poblacion == poblacion);
-                if (cobertura == null)
-                {
-                    return NotFound("No se encontro referencia a la cobertura introducida");
-                }
-
-                var lugar = _context.lugarTbl.FirstOrDefault(b => b.entidad == entidad);
-                if (lugar == null)
-                {
-                    return NotFound("No se encontro referencia al lugar introducido");
-                }
-
-                var edades = _context.edadesTbl.FirstOrDefault(b => b.rangoEdades == rangoEdades);
-                if (edades == null)
-                {
-                    return NotFound("No se encontro referencia al rango de edades introducido");
-                }
-
-                var fecha = _context.fechaTbl.FirstOrDefault(b => b.anio == anio && b.mes == mes);
-                if (fecha == null)
-                {
-                    return NotFound("No se encontro referencia a la fecha introducida");
-                }
-
-
-                var datoEstadistico = new Estadistica
-                {
-                    Categoria = categoria,
-                    Cobertura = cobertura,
-                    Lugar = lugar,
-                    Edades = edades,
-                    Fecha = fecha,
-                    dato = datoEst
-                };
-                
-                Console.WriteLine("texto es: "+datoEstadistico.dato);
-
-                // Guardar el nuevo registro en la base de datos
-                _context.estadisticaTbl.Add(datoEstadistico);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { mensaje = "Registro creado"});
+                return Ok(estadistica);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Error interno del servidor: {ex.Message}");
             }
         }        
+
+        [HttpPost]
+        [Route("transaccion")]
+        public async Task<ActionResult<Estadistica>> Post([FromBody] EstadisticaPost[] estadisticaDto)
+        {
+            try
+            {
+                await estadisticaDAO.guardarArreglo(estadisticaDto);
+
+                return Ok("Datos guardados con exito");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
+        }
 
         // DELETE: api/Estadistica/5
         [HttpDelete("{id}")]

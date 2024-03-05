@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace apiSipinna.Modules.XlsParser;
+namespace apiSipinna.Modules.XlsParser
 {
     public class Data
     {

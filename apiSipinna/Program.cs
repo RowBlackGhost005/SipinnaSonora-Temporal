@@ -1,8 +1,11 @@
 using apiSipinna.Models;
 using Microsoft.EntityFrameworkCore;
+using apiSipinna.CRUD;
+
+
 //XLS Reader Required
 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-using apiSipinna.CRUD;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

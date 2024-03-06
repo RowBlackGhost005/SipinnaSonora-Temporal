@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 public class XlsTest{
 
     public XlsTest(){
-        String filepath = "apiSipinna/Assests/Test Formato.xlsx";
+        String filepath = "Assests/Test Formato.xlsx";
         FileStream stream = File.Open(filepath, FileMode.Open, FileAccess.Read);
         XlsParser xlsParser = new XlsParser(stream);
 

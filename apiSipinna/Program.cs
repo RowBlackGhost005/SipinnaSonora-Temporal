@@ -2,6 +2,7 @@ using apiSipinna.Models;
 using Microsoft.EntityFrameworkCore;
 //XLS Reader Required
 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+using apiSipinna.CRUD;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<Conexiones>(opt =>
     opt.UseMySQL(cadena));
 //builder.services.AddScoped<EstadisticaDAO>();    
+
+builder.Services.AddTransient<IOperations, Operations>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

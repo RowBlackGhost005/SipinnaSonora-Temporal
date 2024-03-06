@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace apiSipinna.Models;
 
+
+
 [Table("estadistica")]
 public class Estadistica{
     

@@ -33,19 +33,31 @@ public interface IOperations{
     public Task<Boolean> DeleteCobertura(int id);
     #endregion
 
-    #region Cobertura
-    #endregion
-
     #region Edades
+        public Task<Edades> ReadEdades(int id);
+        public Task<Boolean> UpdateEdades(Edades edades);
+        public Task<Boolean> DeleteEdades(int id);
     #endregion
 
     #region Estadistica
+        public Task<Estadistica> ReadEstadistica(int id);
+        public Task<Boolean> UpdateEstadistica(Estadistica estadistica);
+        public Task<Boolean> DeleteEstadistica(int id);
     #endregion
 
     #region Fecha
+        public Task<Fecha> ReadFecha(int id);
+        public Task<Boolean> UpdateFecha(Fecha fecha);
+        public Task<Boolean> DeleteFecha(int id);
+        public Task<Boolean> DeleteFecha(Fecha fecha);
     #endregion
 
     #region Lugar
+        public Task<Lugar> ReadLugar(int id);
+        public Task<Boolean> UpdateLugar(Lugar lugar);
+        public Task<Boolean> DeleteLugar(Lugar lugar);
+        public Task<Boolean> DeleteLugar(int id);
+
     #endregion
 
 }

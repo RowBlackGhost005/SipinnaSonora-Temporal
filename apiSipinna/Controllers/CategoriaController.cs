@@ -9,11 +9,9 @@ namespace apiSipinna.Controllers;
 [Route("api/[controller]")]
 public class CategoriaController:ControllerBase{
 
-    private Conexiones _conexion;
     private IOperations _operations;
 
-    public CategoriaController(Conexiones conexiones, IOperations operations){
-        _conexion = conexiones;
+    public CategoriaController(IOperations operations){
         _operations = operations;
     }
 

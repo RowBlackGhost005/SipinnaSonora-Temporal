@@ -1,5 +1,6 @@
 using apiSipinna.Models;
 using Microsoft.EntityFrameworkCore;
+using apiSipinna.CRUD;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddControllers();
 //conexion a base de datos
 builder.Services.AddDbContext<Conexiones>(opt =>
     opt.UseMySQL(cadena));
+
+builder.Services.AddTransient<IOperations, Operations>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

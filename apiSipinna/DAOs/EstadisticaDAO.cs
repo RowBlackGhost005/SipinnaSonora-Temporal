@@ -8,21 +8,19 @@ public class EstadisticaDAO{
         _context = context; 
     }
 
-        public async Task<Estadistica> agregarEstadistica(Estadistica estadisticaDto)
+        public async Task<Estadistica> agregarEstadistica(Estadistica estadistica)
         {
+
+            var indicador = estadistica.CategoriaNav.indicador;
+            var alcance = estadistica.CoberturaNav.alcance;
+            var poblacion = estadistica.CoberturaNav.poblacion;
+            var entidad = estadistica.LugarNav.entidad;
+            var rangoEdades = estadistica.EdadesNav.rangoEdades;
+            var anio = estadistica.FechaNav.anio;
+            var mes = estadistica.FechaNav.mes;
+
             try
             {
-
-               var indicador = estadisticaDto.Indicador;
-               var alcance = estadisticaDto.Alcance;
-               var poblacion = estadisticaDto.Poblacion;
-               var entidad = estadisticaDto.Entidad;
-               var rangoEdades = estadisticaDto.RangoEdades;
-               var anio = estadisticaDto.Anio ?? 0;
-               var mes = estadisticaDto.Mes;
-               float datoEst = estadisticaDto.DatoEst ?? 0.0f;
-            
-                 
                 var categoria = _context.categoriaTbl.FirstOrDefault(a => a.indicador == indicador);
                 if (categoria == null)
                 {
@@ -54,24 +52,16 @@ public class EstadisticaDAO{
                     throw new InvalidOperationException("No se encontro");
                 }
 
+               estadistica.CategoriaNav = categoria;
+               estadistica.CoberturaNav = cobertura;
+               estadistica.LugarNav = lugar;
+               estadistica.EdadesNav = edades;
+               estadistica.FechaNav = fecha;
 
-                var datoEstadistico = new Estadistica
-                {
-                    Categoria = categoria,
-                    Cobertura = cobertura,
-                    Lugar = lugar,
-                    Edades = edades,
-                    Fecha = fecha,
-                    dato = datoEst
-                };
-                
-                Console.WriteLine("texto es: "+datoEstadistico.dato);
-
-                // Guardar el nuevo registro en la base de datos
-                _context.estadisticaTbl.Add(datoEstadistico);
+                _context.estadisticaTbl.Add(estadistica);
                 await _context.SaveChangesAsync();
 
-                return datoEstadistico;
+                return estadistica;
             }
             catch (Exception ex)
             {
@@ -79,26 +69,24 @@ public class EstadisticaDAO{
             }
         }
 
-        public async Task<string> guardarArreglo(EstadisticaPost[] estadisticaDto)
+        public async Task<string> guardarArreglo(List<Estadistica> estadistica)
         {
             try
             {
 
                using var transaction = _context.Database.BeginTransaction(); 
 
-               foreach (EstadisticaPost element in estadisticaDto)
+               foreach (Estadistica element in estadistica)
                {
-    
-               var indicador = element.Indicador;
-               var alcance = element.Alcance;
-               var poblacion = element.Poblacion;
-               var entidad = element.Entidad;
-               var rangoEdades = element.RangoEdades;
-               var anio = element.Anio ?? 0;
-               var mes = element.Mes;
-               float datoEst = element.DatoEst ?? 0.0f;
-            
-                 
+
+                var indicador = element.CategoriaNav.indicador;
+                var alcance = element.CoberturaNav.alcance;
+                var poblacion = element.CoberturaNav.poblacion;
+                var entidad = element.LugarNav.entidad;
+                var rangoEdades = element.EdadesNav.rangoEdades;
+                var anio = element.FechaNav.anio;
+                var mes = element.FechaNav.mes;
+                
                 var categoria = _context.categoriaTbl.FirstOrDefault(a => a.indicador == indicador);
                 if (categoria == null)
                 {
@@ -130,21 +118,14 @@ public class EstadisticaDAO{
                     throw new InvalidOperationException("No se encontro");
                 }
 
-
-                var datoEstadistico = new Estadistica
-                {
-                    Categoria = categoria,
-                    Cobertura = cobertura,
-                    Lugar = lugar,
-                    Edades = edades,
-                    Fecha = fecha,
-                    dato = datoEst
-                };
-                
-                Console.WriteLine("texto es: "+datoEstadistico.dato);
-
+               element.CategoriaNav = categoria;
+               element.CoberturaNav = cobertura;
+               element.LugarNav = lugar;
+               element.EdadesNav = edades;
+               element.FechaNav = fecha;
+            
                 // Guardar el nuevo registro en la base de datos
-                _context.estadisticaTbl.Add(datoEstadistico);
+                _context.estadisticaTbl.Add(element);
                 await _context.SaveChangesAsync();                   
                }
 
@@ -157,17 +138,48 @@ public class EstadisticaDAO{
                 throw new InvalidOperationException(ex.Message);
             }
         }
+    
 
         public async Task<IEnumerable<Estadistica>> getEstadistica()
         {
             try{
               return await _context.estadisticaTbl
-                .Include(e => e.Categoria)
-                .Include(e => e.Cobertura)
-                .Include(e => e.Edades)
-                .Include(e => e.Lugar)
-                .Include(e => e.Fecha)
+                .Include(e => e.CategoriaNav)
+                .Include(e => e.CoberturaNav)
+                .Include(e => e.EdadesNav)
+                .Include(e => e.LugarNav)
+                .Include(e => e.FechaNav)
                 .ToListAsync();
+            }catch(Exception ex){
+                throw new InvalidOperationException(ex.Message);
+            }
+
+        }
+
+        public async Task<IEnumerable<EstadisticaConsulta>> getEstadisticaDatos()
+        {
+            try{
+                var resultadoConsulta = from estadistica in _context.estadisticaTbl
+                    join categoria in _context.categoriaTbl on estadistica.categoria equals categoria.idCategoria
+                    join cobertura in _context.coberturaTbl on estadistica.cobertura equals cobertura.idCobertura
+                    join edades in _context.edadesTbl on estadistica.edades equals edades.idedades
+                    join fecha in _context.fechaTbl on estadistica.fecha equals fecha.idfecha
+                    join lugar in _context.lugarTbl on estadistica.lugar equals lugar.idLugar
+                    select new EstadisticaConsulta
+                    {
+                        Dominio = categoria.dominio,
+                        Categoria = categoria.categoria,
+                        Indicador = categoria.indicador,
+                        Poblacion = cobertura.poblacion,
+                        RangoEdades = edades.rangoEdades,
+                        Entidad = lugar.entidad,
+                        Anio = fecha.anio,
+                        Dato = estadistica.dato
+                    };
+
+
+                return await resultadoConsulta.ToListAsync();
+
             }catch(Exception ex){
                 throw new InvalidOperationException(ex.Message);
             }

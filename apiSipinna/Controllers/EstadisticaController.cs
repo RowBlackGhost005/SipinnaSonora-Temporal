@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using apiSipinna.Models;
+using apiSipinna.Modules.XlsParser;
 
 
 namespace apiSipinna.Controllers
@@ -37,34 +38,15 @@ namespace apiSipinna.Controllers
             }
 
         }
-/*
+
         [HttpGet]
         [Route("datos")]
         public async Task<ActionResult<IEnumerable<EstadisticaConsulta>>> GetestadisticasDatos()
         {
-            var consulta = from estadistica in _context.estadisticaTbl
-                join categoria in _context.categoriaTbl on estadistica.categoria equals categoria.idCategoria
-                join lugar in _context.lugarTbl on estadistica.lugar equals lugar.idLugar
-                join edades in _context.edadesTbl on estadistica.edades equals edades.idedades
-                join fecha in _context.fechaTbl on estadistica.fecha equals fecha.idfecha
-                join cobertura in _context.coberturaTbl on estadistica.cobertura equals cobertura.idCobertura
-                select new EstadisticaConsulta
-                {
-                    Dominio = categoria.dominio,
-                    Categoria = categoria.categoria,
-                    Indicador = categoria.indicador,
-                    Poblacion = cobertura.poblacion,
-                    RangoEdades = edades.rangoEdades,
-                    Entidad = lugar.entidad,
-                    Anio = fecha.anio,
-                    Dato = estadistica.dato
-                };
-
-            List<EstadisticaConsulta> resultados = await consulta.ToListAsync();
-
-            return resultados;
+            var resultados = await estadisticaDAO.getEstadisticaDatos();
+            return Ok(resultados);
         }
-        */
+        
 
         // GET: api/Estadistica/5
         [HttpGet("{id}")]
@@ -80,6 +62,7 @@ namespace apiSipinna.Controllers
             return estadistica;
         }
 
+        /*
         // PUT: api/Estadistica/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -110,10 +93,12 @@ namespace apiSipinna.Controllers
 
             return NoContent();
         }
+        */
 
         // POST: api/Estadistica
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        /*[HttpPost]
+        /*
+        [HttpPost]
         public async Task<ActionResult<Estadistica>> PostEstadistica(Estadistica estadistica)
         {
             _context.estadisticaTbl.Add(estadistica);
@@ -128,7 +113,16 @@ namespace apiSipinna.Controllers
         {
             try
             {
-                Estadistica estadistica = await estadisticaDAO.agregarEstadistica(estadisticaDto);
+                //dummy de estadistica
+                Categoria categoria = new Categoria(0,"Proteccion","Trabajo","Promedio de horas que trabajan las niñas, niños y adolescentes");
+                Cobertura cobertura = new Cobertura(0,"Nacional","Total");
+                Lugar lugar = new Lugar(0,"Sonora");
+                Edades edades = new Edades(0,"5-7");
+                Fecha fecha = new Fecha(0,2017,"Febrero");
+
+                Estadistica estadistica = new Estadistica(0,cobertura,categoria,edades,lugar,fecha,4350.0f);
+
+                await estadisticaDAO.agregarEstadistica(estadistica);
 
                 return Ok(estadistica);
             }
@@ -138,13 +132,33 @@ namespace apiSipinna.Controllers
             }
         }        
 
+
         [HttpPost]
         [Route("transaccion")]
         public async Task<ActionResult<Estadistica>> Post([FromBody] EstadisticaPost[] estadisticaDto)
         {
             try
             {
-                await estadisticaDAO.guardarArreglo(estadisticaDto);
+                //dummy arreglo de estadisticas
+                
+                Categoria categoria = new Categoria(0,"Proteccion","Trabajo","Promedio de horas que trabajan las niñas, niños y adolescentes");
+                Cobertura cobertura = new Cobertura(0,"Nacional","Total");
+                Lugar lugar = new Lugar(0,"Sonora");
+                Edades edades = new Edades(0,"5-7");
+                Fecha fecha = new Fecha(0,2017,"Febrero");
+
+                Estadistica estadistica = new Estadistica(0,cobertura,categoria,edades,lugar,fecha,4350.0f);
+                Estadistica estadistica2 = new Estadistica(0,cobertura,categoria,edades,lugar,fecha,4350.0f);
+                Estadistica estadistica3 = new Estadistica(0,cobertura,categoria,edades,lugar,fecha,4350.0f);
+
+                var estadistics = new List<Estadistica>(){
+                    estadistica,
+                    estadistica2,
+                    estadistica3
+                };
+                
+ 
+                await estadisticaDAO.guardarArreglo(estadistics);
 
                 return Ok("Datos guardados con exito");
             }
@@ -154,6 +168,55 @@ namespace apiSipinna.Controllers
             }
         }
 
+        /*
+        [HttpPost]
+        [Route("transaccionExcel")]
+        public async Task<ActionResult<Estadistica>> Post()
+        {
+            try
+            {
+               
+                String filepath = "Assests/Test Formato.xlsx";
+                FileStream stream = File.Open(filepath, FileMode.Open, FileAccess.Read);
+                XlsParser xlsParser = new XlsParser(stream);
+
+                var datalist = xlsParser.GetStatisticData();
+                var estadistics = new List<Estadistica>(){
+   
+                };  
+
+                foreach(var item in xlsParser.GetStatisticData())
+                {
+
+                    Console.WriteLine(item);
+
+
+                    
+                    Categoria categoria = new Categoria(0,"Proteccion","Trabajo","Promedio de horas que trabajan las niñas, niños y adolescentes");
+                    Cobertura cobertura = new Cobertura(0,"Nacional",item.poblacion);
+                    Lugar lugar = new Lugar(0,item.entidad);
+                    Edades edades = new Edades(0,item.edades);
+                    Fecha fecha = new Fecha(0,2017,"Febrero");
+
+                    Estadistica estadistica = new Estadistica(0,cobertura,categoria,edades,lugar,fecha,item.dato);
+
+                    estadistics.Add(estadistica); 
+                    
+                }
+
+ 
+                await estadisticaDAO.guardarArreglo(estadistics);
+
+                return Ok("Datos guardados con exito");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
+        }
+        */
+    
+        /*
         // DELETE: api/Estadistica/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEstadistica(int id)
@@ -169,10 +232,12 @@ namespace apiSipinna.Controllers
 
             return NoContent();
         }
+        */
 
         private bool EstadisticaExists(int id)
         {
             return _context.estadisticaTbl.Any(e => e.idestadistica == id);
         }
+
     }
 }

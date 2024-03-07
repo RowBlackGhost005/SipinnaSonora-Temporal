@@ -1,0 +1,38 @@
+header {
+    display: flex;
+    position: relative;
+    padding: 35px;
+    z-index: 1;
+    overflow: hidden; //Contenido no se ve afectado, por la imagen de fondo
+    &::before {
+        content: "";
+        background-color: rgba(65, 1, 35, 0.90); //Ultimo digito es para ajustar la opacidad, de la superposicion del color.
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        z-index: -1; //Para seleccionar en que lugar va el color 
+    }
+    &::after {
+        content: "";
+        background: {
+            image: url('./../../../../assets/img/fondo.jpg');
+            repeat: no-repeat; 
+            size: cover; 
+            position: 50% 35%;
+        }
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        transform: scaleX(-1); // Voltear horizontalmente el fondo
+        z-index: -2; //Para organizar en que lugar va la imagen
+    }
+}
+
+.logo{
+margin: 0 auto;
+width: 12%;
+}

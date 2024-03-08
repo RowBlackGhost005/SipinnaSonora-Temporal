@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Connections;
 using apiSipinna.Utils;
 using Microsoft.AspNetCore.Http.Timeouts;
+using K4os.Hash.xxHash;
 
 namespace apiSipinna.CRUD{
 
@@ -39,9 +40,23 @@ namespace apiSipinna.CRUD{
             }
         }
 
-        public Task<bool> DeleteCategoria(int id)
+        public async Task<bool> DeleteCategoria(int id)
         {
-            throw new NotImplementedException();
+            Categoria cat;
+            try{
+                cat = await ReadCategoria(id);
+                if(cat != null){
+                    Conexion.categoriaTbl.Attach(cat);
+                    Conexion.categoriaTbl.Remove(cat);
+                    await Conexion.SaveChangesAsync();
+                    return true;
+                }else{
+                    return false;
+                }
+            }catch(Exception e){
+                logger.MostrarExceptionInfo(e);
+                return false;
+            }
         }
 
         public Task<bool> DeleteCobertura(int id)
@@ -112,9 +127,23 @@ namespace apiSipinna.CRUD{
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateCategoria(Categoria cat)
-        {
-            throw new NotImplementedException();
+        public async Task<bool> UpdateCategoria(Categoria cat){
+            Categoria row;
+            try{
+                row = await ReadCategoria(cat.idCategoria);
+                if(row != null){
+                    row.categoria = "" != cat.categoria ? cat.categoria : row.categoria;
+                    row.dominio = "" != cat.dominio ? cat.dominio : row.dominio;
+                    row.indicador = "" != cat.indicador ? cat.indicador : row.indicador;
+                    await Conexion.SaveChangesAsync();
+                    return true;
+                }else{
+                    return false;
+                }
+            }catch(Exception e){
+                logger.MostrarExceptionInfo(e);
+                return false;
+            }
         }
 
         public Task<bool> UpdateCobertura(Categoria cat)

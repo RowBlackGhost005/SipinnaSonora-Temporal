@@ -31,4 +31,14 @@ public class CategoriaController:ControllerBase{
         return await _operations.Create(cat);
     }
 
+    [HttpPut]
+    public async Task<Boolean> Put([FromBody]Categoria cat){
+        return await _operations.UpdateCategoria(cat);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<Boolean> Delete(int id){
+        return await _operations.DeleteCategoria(id);
+    }
+
 }

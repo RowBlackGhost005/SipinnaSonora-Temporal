@@ -19,4 +19,8 @@ public class Logger{
             // do nothing....
         }
     }
+
+    public void MostrarExceptionInfo(Exception e){
+        Console.WriteLine($"Ha ocurrido una excepción vvvv\nNombre: {e.GetType().Name}\nMensaje de la excepción: {e.Message}\nLocalización del error: {e.Source}");
+    }
 }

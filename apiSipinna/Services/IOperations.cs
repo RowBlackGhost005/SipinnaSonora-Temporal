@@ -28,8 +28,8 @@ public interface IOperations{
     #endregion
 
     #region Cobertura
-    public Task<Categoria> ReadCobertura(int id);
-    public Task<Boolean> UpdateCobertura(Categoria cat);
+    public Task<Cobertura> ReadCobertura(int id);
+    public Task<Boolean> UpdateCobertura(Cobertura cat);
     public Task<Boolean> DeleteCobertura(int id);
     #endregion
 

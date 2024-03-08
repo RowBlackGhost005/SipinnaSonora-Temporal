@@ -59,14 +59,42 @@ namespace apiSipinna.CRUD{
             }
         }
 
-        public Task<bool> DeleteCobertura(int id)
+        public async Task<bool> DeleteCobertura(int id)
         {
-            throw new NotImplementedException();
+            Cobertura cob;
+            try{
+                cob = await ReadCobertura(id);
+                if(cob != null){
+                    Conexion.coberturaTbl.Attach(cob);
+                    Conexion.coberturaTbl.Remove(cob);
+                    await Conexion.SaveChangesAsync();
+                    return true;
+                }else{
+                    return false;
+                }
+            }catch(Exception e){
+                logger.MostrarExceptionInfo(e);
+                return false;
+            }
         }
 
-        public Task<bool> DeleteEdades(int id)
+        public async Task<bool> DeleteEdades(int id)
         {
-            throw new NotImplementedException();
+            Edades edades;
+            try{
+                edades = await ReadEdades(id);
+                if(edades != null){
+                    Conexion.edadesTbl.Attach(edades);
+                    Conexion.edadesTbl.Remove(edades);
+                    await Conexion.SaveChangesAsync();
+                    return true;
+                }else{
+                    return false;
+                }
+            }catch(Exception e){
+                logger.MostrarExceptionInfo(e);
+                return false;
+            }
         }
 
         public Task<bool> DeleteEstadistica(int id)
@@ -102,14 +130,22 @@ namespace apiSipinna.CRUD{
             }
         }
 
-        public Task<Categoria> ReadCobertura(int id)
+        public async Task<Cobertura> ReadCobertura(int id)
         {
-            throw new NotImplementedException();
+            if(id <= 0){
+                throw new Exception("'id' no puede ser igual o menor que '0'");
+            }else{
+                return await Conexion.coberturaTbl.FindAsync(id);
+            }
         }
 
-        public Task<Edades> ReadEdades(int id)
+        public async Task<Edades> ReadEdades(int id)
         {
-            throw new NotImplementedException();
+            if(id <= 0){
+                throw new Exception("'id' no puede ser igual o menor que '0'");
+            }else{
+                return await Conexion.edadesTbl.FindAsync(id);
+            }
         }
 
         public Task<Estadistica> ReadEstadistica(int id)
@@ -146,14 +182,41 @@ namespace apiSipinna.CRUD{
             }
         }
 
-        public Task<bool> UpdateCobertura(Categoria cat)
+        public async Task<bool> UpdateCobertura(Cobertura cob)
         {
-            throw new NotImplementedException();
+            Cobertura row;
+            try{
+                row = await ReadCobertura(cob.idCobertura);
+                if(row != null){
+                    row.poblacion = "" != cob.poblacion ? cob.poblacion : row.poblacion;
+                    row.alcance = "" != cob.alcance ? cob.alcance : row.alcance;
+                    await Conexion.SaveChangesAsync();
+                    return true;
+                }else{
+                    return false;
+                }
+            }catch(Exception e){
+                logger.MostrarExceptionInfo(e);
+                return false;
+            }
         }
 
-        public Task<bool> UpdateEdades(Edades edades)
+        public async Task<bool> UpdateEdades(Edades edades)
         {
-            throw new NotImplementedException();
+            Edades row;
+            try{
+                row = await ReadEdades(edades.idedades);
+                if(row != null){
+                    row.rangoEdades = "" != edades.rangoEdades ? edades.rangoEdades : row.rangoEdades;
+                    await Conexion.SaveChangesAsync();
+                    return true;
+                }else{
+                    return false;
+                }
+            }catch(Exception e){
+                logger.MostrarExceptionInfo(e);
+                return false;
+            }
         }
 
         public Task<bool> UpdateEstadistica(Estadistica estadistica)

@@ -17,23 +17,23 @@ public class CoberturaController:ControllerBase{
 
     [HttpGet("{id}")]
     public async Task<Cobertura> Get(int id){
-        Cobertura? cat = null;
+        Cobertura? cob = null;
         try{
-            cat = await _operations.ReadCobertura(id);
+            cob = await _operations.ReadCobertura(id);
         }catch(Exception e){
             Console.WriteLine($"Error!!!: {e.Message}");
         }
-        return cat;
+        return cob;
     }
 
     [HttpPost]
-    public async Task<Boolean> Post([FromBody]Cobertura cat){
-        return await _operations.Create(cat);
+    public async Task<Boolean> Post([FromBody]Cobertura cob){
+        return await _operations.Create(cob);
     }
 
     [HttpPut]
-    public async Task<Boolean> Put([FromBody]Cobertura cat){
-        return await _operations.UpdateCobertura(cat);
+    public async Task<Boolean> Put([FromBody]Cobertura cob){
+        return await _operations.UpdateCobertura(cob);
     }
 
     [HttpDelete("{id}")]

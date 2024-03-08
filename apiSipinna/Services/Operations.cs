@@ -102,9 +102,23 @@ namespace apiSipinna.CRUD{
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteFecha(int id)
+        public async Task<bool> DeleteFecha(int id)
         {
-            throw new NotImplementedException();
+            Fecha fecha;
+            try{
+                fecha = await ReadFecha(id);
+                if(fecha != null){
+                    Conexion.fechaTbl.Attach(fecha);
+                    Conexion.fechaTbl.Remove(fecha);
+                    await Conexion.SaveChangesAsync();
+                    return true;
+                }else{
+                    return false;
+                }
+            }catch(Exception e){
+                logger.MostrarExceptionInfo(e);
+                return false;
+            }
         }
 
         public Task<bool> DeleteFecha(Fecha fecha)
@@ -153,9 +167,13 @@ namespace apiSipinna.CRUD{
             throw new NotImplementedException();
         }
 
-        public Task<Fecha> ReadFecha(int id)
+        public async Task<Fecha> ReadFecha(int id)
         {
-            throw new NotImplementedException();
+            if(id <= 0){
+                throw new Exception("'id' no puede ser igual o menor que '0'");
+            }else{
+                return await Conexion.fechaTbl.FindAsync(id);
+            }
         }
 
         public Task<Lugar> ReadLugar(int id)
@@ -224,9 +242,23 @@ namespace apiSipinna.CRUD{
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateFecha(Fecha fecha)
+        public async Task<bool> UpdateFecha(Fecha fecha)
         {
-            throw new NotImplementedException();
+            Fecha row;
+            try{
+                row = await ReadFecha(fecha.idfecha);
+                if(row != null){
+                    row.mes = "" != fecha.mes ? fecha.mes : row.mes;
+                    row.anio = 0 != fecha.anio ? fecha.anio : row.anio;
+                    await Conexion.SaveChangesAsync();
+                    return true;
+                }else{
+                    return false;
+                }
+            }catch(Exception e){
+                logger.MostrarExceptionInfo(e);
+                return false;
+            }
         }
 
         public Task<bool> UpdateLugar(Lugar lugar)

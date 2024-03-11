@@ -1,9 +1,10 @@
 header {
     display: flex;
     position: relative;
-    padding: 35px;
+    padding: 30px;
     z-index: 1;
     overflow: hidden; //Contenido no se ve afectado, por la imagen de fondo
+
     &::before {
         content: "";
         background-color: rgba(65, 1, 35, 0.90); //Ultimo digito es para ajustar la opacidad, de la superposicion del color.
@@ -14,14 +15,13 @@ header {
         bottom: 0;
         z-index: -1; //Para seleccionar en que lugar va el color 
     }
+
     &::after {
         content: "";
-        background: {
-            image: url('./../../../../assets/img/fondo.jpg');
-            repeat: no-repeat; 
-            size: cover; 
-            position: 50% 35%;
-        }
+        background-image: url('./../../../../assets/img/fondo.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: 50% 35%; // Ajustar la posición de la imagen de fondo
         position: absolute;
         top: 0;
         right: 0;
@@ -32,7 +32,7 @@ header {
     }
 }
 
-.logo{
-margin: 0 auto;
-width: 12%;
+.logo {
+    margin: 0 auto;
+    width: 170px;
 }

@@ -18,7 +18,7 @@ public class XlsParser
 
     private DataTable _xlsData;
 
-    public XlsParser(FileStream xlsDataStream)
+    public XlsParser(Stream xlsDataStream)
     {
         _xlsData = ExcelReaderFactory.CreateReader(xlsDataStream).AsDataSet().Tables[0];
 

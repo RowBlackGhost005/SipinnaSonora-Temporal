@@ -239,5 +239,41 @@ namespace apiSipinna.Controllers
             return _context.estadisticaTbl.Any(e => e.idestadistica == id);
         }
 
+        // GET: api/Estadistica
+        [HttpPost]
+        [Route("xls")]
+        public async Task<IActionResult> SaveXlsEstadisticas([FromForm] IFormFile xls)
+        {
+            try{
+
+                if (xls.Length <= 0 || xls.ContentType is null) return BadRequest();
+                var actualFileName = xls.FileName;
+
+                using (var stream = xls.OpenReadStream())
+                {
+                    if(stream != null){
+
+                        Console.WriteLine("Parsing File");
+                        XlsParser xlsParser = new XlsParser(stream);
+
+                        foreach(var item in xlsParser.GetStatisticData())
+                        {
+                            //TODO: CALL DAO
+                            Console.WriteLine(item);
+                        }
+
+                    }else{
+                        return BadRequest();
+                    }  
+                }
+    
+                return Ok(); 
+
+            }catch(Exception ex){
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
+
+        }
+
     }
 }

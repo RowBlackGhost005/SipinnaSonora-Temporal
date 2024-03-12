@@ -59,5 +59,4 @@ public interface IOperations{
         public Task<Boolean> DeleteLugar(int id);
 
     #endregion
-
 }

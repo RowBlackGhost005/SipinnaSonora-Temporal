@@ -6,8 +6,23 @@ using apiSipinna.CRUD;
 //XLS Reader Required
 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
+//CORS
+var allowLocalHost = "localhostOrigin";
+//
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+//CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: allowLocalHost,
+    policy =>
+    {
+        policy.WithOrigins("http://localhost");
+    });
+});
+//
 
 // Add services to the container.
 string? cadena = builder.Configuration.GetConnectionString("DefaultConnection") ?? "otracadena";
@@ -32,6 +47,10 @@ using (var serviceScope = app.Services.CreateScope())
     var dbContext = serviceProvider.GetRequiredService<Conexiones>();
     dbContext.Database.EnsureCreated();
 }
+
+//CORS
+app.UseCors();
+//
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

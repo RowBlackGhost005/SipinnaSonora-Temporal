@@ -1,0 +1,192 @@
+using Microsoft.EntityFrameworkCore;
+using apiSipinna.Models;
+
+public class EstadisticaDAO{
+    private readonly Conexiones _context; 
+
+    public EstadisticaDAO(Conexiones context){
+        _context = context; 
+    }
+
+        public async Task<Estadistica> agregarEstadistica(Estadistica estadistica)
+        {
+
+            var indicador = estadistica.CategoriaNav.indicador;
+            var alcance = estadistica.CoberturaNav.alcance;
+            var poblacion = estadistica.CoberturaNav.poblacion;
+            var entidad = estadistica.LugarNav.entidad;
+            var rangoEdades = estadistica.EdadesNav.rangoEdades;
+            var anio = estadistica.FechaNav.anio;
+            var mes = estadistica.FechaNav.mes;
+
+            try
+            {
+                var categoria = _context.categoriaTbl.FirstOrDefault(a => a.indicador == indicador);
+                if (categoria == null)
+                {
+                    throw new InvalidOperationException("No se encontro");
+                }
+
+                
+                var cobertura = _context.coberturaTbl.FirstOrDefault(b => b.alcance == alcance && b.poblacion == poblacion);
+                if (cobertura == null)
+                {
+                    throw new InvalidOperationException("No se encontro");
+                }
+
+                var lugar = _context.lugarTbl.FirstOrDefault(b => b.entidad == entidad);
+                if (lugar == null)
+                {
+                    throw new InvalidOperationException("No se encontro");
+                }
+
+                var edades = _context.edadesTbl.FirstOrDefault(b => b.rangoEdades == rangoEdades);
+                if (edades == null)
+                {
+                    throw new InvalidOperationException("No se encontro");
+                }
+
+                var fecha = _context.fechaTbl.FirstOrDefault(b => b.anio == anio && b.mes == mes);
+                if (fecha == null)
+                {
+                    throw new InvalidOperationException("No se encontro");
+                }
+
+               estadistica.CategoriaNav = categoria;
+               estadistica.CoberturaNav = cobertura;
+               estadistica.LugarNav = lugar;
+               estadistica.EdadesNav = edades;
+               estadistica.FechaNav = fecha;
+
+                _context.estadisticaTbl.Add(estadistica);
+                await _context.SaveChangesAsync();
+
+                return estadistica;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(ex.Message);
+            }
+        }
+
+        public async Task<string> guardarArreglo(List<Estadistica> estadistica)
+        {
+            try
+            {
+
+               using var transaction = _context.Database.BeginTransaction(); 
+
+               foreach (Estadistica element in estadistica)
+               {
+
+                var indicador = element.CategoriaNav.indicador;
+                var alcance = element.CoberturaNav.alcance;
+                var poblacion = element.CoberturaNav.poblacion;
+                var entidad = element.LugarNav.entidad;
+                var rangoEdades = element.EdadesNav.rangoEdades;
+                var anio = element.FechaNav.anio;
+                var mes = element.FechaNav.mes;
+                
+                var categoria = _context.categoriaTbl.FirstOrDefault(a => a.indicador == indicador);
+                if (categoria == null)
+                {
+                    throw new InvalidOperationException("No se encontro");
+                }
+
+                
+                var cobertura = _context.coberturaTbl.FirstOrDefault(b => b.alcance == alcance && b.poblacion == poblacion);
+                if (cobertura == null)
+                {
+                    throw new InvalidOperationException("No se encontro");
+                }
+
+                var lugar = _context.lugarTbl.FirstOrDefault(b => b.entidad == entidad);
+                if (lugar == null)
+                {
+                    throw new InvalidOperationException("No se encontro");
+                }
+
+                var edades = _context.edadesTbl.FirstOrDefault(b => b.rangoEdades == rangoEdades);
+                if (edades == null)
+                {
+                    throw new InvalidOperationException("No se encontro");
+                }
+
+                var fecha = _context.fechaTbl.FirstOrDefault(b => b.anio == anio && b.mes == mes);
+                if (fecha == null)
+                {
+                    throw new InvalidOperationException("No se encontro");
+                }
+
+               element.CategoriaNav = categoria;
+               element.CoberturaNav = cobertura;
+               element.LugarNav = lugar;
+               element.EdadesNav = edades;
+               element.FechaNav = fecha;
+            
+                // Guardar el nuevo registro en la base de datos
+                _context.estadisticaTbl.Add(element);
+                await _context.SaveChangesAsync();                   
+               }
+
+                transaction.Commit();
+
+                return "transaccion completada";
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(ex.Message);
+            }
+        }
+    
+
+        public async Task<IEnumerable<Estadistica>> getEstadistica()
+        {
+            try{
+              return await _context.estadisticaTbl
+                .Include(e => e.CategoriaNav)
+                .Include(e => e.CoberturaNav)
+                .Include(e => e.EdadesNav)
+                .Include(e => e.LugarNav)
+                .Include(e => e.FechaNav)
+                .ToListAsync();
+            }catch(Exception ex){
+                throw new InvalidOperationException(ex.Message);
+            }
+
+        }
+
+        public async Task<IEnumerable<EstadisticaConsulta>> getEstadisticaDatos()
+        {
+            try{
+                var resultadoConsulta = from estadistica in _context.estadisticaTbl
+                    join categoria in _context.categoriaTbl on estadistica.categoria equals categoria.idCategoria
+                    join cobertura in _context.coberturaTbl on estadistica.cobertura equals cobertura.idCobertura
+                    join edades in _context.edadesTbl on estadistica.edades equals edades.idedades
+                    join fecha in _context.fechaTbl on estadistica.fecha equals fecha.idfecha
+                    join lugar in _context.lugarTbl on estadistica.lugar equals lugar.idLugar
+                    select new EstadisticaConsulta
+                    {
+                        Dominio = categoria.dominio,
+                        Categoria = categoria.categoria,
+                        Indicador = categoria.indicador,
+                        Poblacion = cobertura.poblacion,
+                        RangoEdades = edades.rangoEdades,
+                        Entidad = lugar.entidad,
+                        Anio = fecha.anio,
+                        Dato = estadistica.dato
+                    };
+
+
+                return await resultadoConsulta.ToListAsync();
+
+            }catch(Exception ex){
+                throw new InvalidOperationException(ex.Message);
+            }
+
+        }
+
+        
+
+
+}

@@ -40,6 +40,33 @@ namespace apiSipinna.CRUD{
             }
         }
 
+        public async Task<Boolean> InsertEstadistica(Estadistica e){
+            //¿Cómo verificar nulls sin hacer tanta paja?
+            Estadistica estadistica;
+            try{
+                estadistica = new Estadistica{
+                    cobertura = e.CoberturaNav.idCobertura,
+                    categoria = e.CategoriaNav.idCategoria,
+                    edades = e.EdadesNav.idedades,
+                    lugar = e.LugarNav.idLugar,
+                    fecha = e.FechaNav.idfecha,
+                    dato = e.dato,
+                    CoberturaNav = await ReadCobertura(e.cobertura),
+                    CategoriaNav = await ReadCategoria(e.categoria),
+                    EdadesNav = await ReadEdades(e.edades),
+                    LugarNav = await ReadLugar(e.lugar),
+                    FechaNav = await ReadFecha(e.fecha)
+                };
+                Conexion.Attach(estadistica);
+                await Conexion.estadisticaTbl.AddAsync(estadistica);
+                await Conexion.SaveChangesAsync();
+                return true;
+            }catch(Exception ex){
+                logger.MostrarExceptionInfo(ex);
+                return false;
+            }
+        }
+
         public async Task<bool> DeleteCategoria(int id)
         {
             Categoria cat;
@@ -267,24 +294,20 @@ namespace apiSipinna.CRUD{
 
         public async Task<Fecha> ReadFecha(Fecha fecha)
         {
-            if(fecha.idfecha <= 0){
-                throw new Exception("'id' no puede ser igual o menor que '0'");
-            }else{
-                List<Fecha> fechas;
-                try{
-                    fechas = await Conexion.fechaTbl
-                                        .Include(x => x.mes)
-                                        .Include(x => x.anio)
-                                        .ToListAsync<Fecha>();
-                    if(fechas.Count() == 0){
-                        throw new Exception($"La fecha {fecha.mes}/{fecha.anio} no está en la base de datos");
-                    }else{
-                        return fechas.FirstOrDefault<Fecha>();
-                    }
-                }catch(Exception e){
-                    logger.MostrarExceptionInfo(e);
-                    return null;
+            List<Fecha> fechas;
+            try{
+                fechas = await Conexion.fechaTbl
+                                    .Include(x => x.mes)
+                                    .Include(x => x.anio)
+                                    .ToListAsync<Fecha>();
+                if(fechas.Count() == 0){
+                    throw new Exception($"La fecha {fecha.mes}/{fecha.anio} no está en la base de datos");
+                }else{
+                    return fechas.FirstOrDefault<Fecha>();
                 }
+            }catch(Exception e){
+                logger.MostrarExceptionInfo(e);
+                return null;
             }
         }
 
@@ -410,6 +433,7 @@ namespace apiSipinna.CRUD{
                 return false;
             }
         }
+
     }
 
 }

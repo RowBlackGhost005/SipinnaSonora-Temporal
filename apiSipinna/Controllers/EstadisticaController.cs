@@ -19,29 +19,21 @@ public class EstadisticaController:ControllerBase{
 
     [HttpPost]
     public async Task<Boolean> Post([FromBody]List<Estadistica> estadisticas){
-        Estadistica aux;
-        foreach(Estadistica e in estadisticas){
-            if(e!=null){
-                try{
-                    aux = new Estadistica{
-                        Categoria = await _operations.ReadCategoria(e.Categoria.idCategoria),
-                        Cobertura = await _operations.ReadCobertura(e.Cobertura.idCobertura),
-                        Edades = await _operations.ReadEdades(e.Edades.idedades),
-                        Fecha = await _operations.ReadFecha(e.Fecha.idfecha),
-                        Lugar = await _operations.ReadLugar(e.Lugar.idLugar),
-                        dato = e.dato
-                    };
-                    if(!await _operations.Create(aux)){
-                        throw new Exception($"No se pudo añadir el elemento {e.ToString()}");
+        if(estadisticas.Count > 0){
+            foreach(Estadistica e in estadisticas){
+                if(e != null){
+                    if(await _operations.InsertEstadistica(e)){
+                        Console.WriteLine("Dato agregado");
+                    }else{
+                        Console.WriteLine("No se pudo agregar el dato");
+                        return false;
                     }
-                }catch(Exception ex){
-                    Console.WriteLine($"Error: {ex.Message}");
-                    return false;
                 }
             }
+            return true;
+        }else{
+            return false;
         }
-        return true;
-        //return await _operations.Create(Estadistica);
     }
 
     /**

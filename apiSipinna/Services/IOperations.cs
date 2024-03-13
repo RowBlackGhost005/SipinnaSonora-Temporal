@@ -40,6 +40,8 @@ public interface IOperations{
     #endregion
 
     #region Estadistica
+
+        public Task<Boolean> InsertEstadistica(Estadistica e);
         public Task<Estadistica> ReadEstadistica(int id);
         public Task<Boolean> UpdateEstadistica(Estadistica estadistica);
         public Task<Boolean> DeleteEstadistica(int id);
@@ -61,5 +63,4 @@ public interface IOperations{
         public Task<Boolean> DeleteLugar(int id);
 
     #endregion
-
 }

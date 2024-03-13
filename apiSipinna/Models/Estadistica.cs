@@ -7,31 +7,46 @@ namespace apiSipinna.Models;
 
 
 [Table("estadistica")]
-public class Estadistica(){
+public class Estadistica{
     
+    public Estadistica(){
+        
+    }
+    public Estadistica(Int32 idestadistica, Cobertura cobertura, Categoria categoria, Edades edades, Lugar lugar, Fecha fecha, float dato)
+    {
+        this.idestadistica = idestadistica;
+        this.CoberturaNav = cobertura;
+        this.CategoriaNav = categoria;
+        this.EdadesNav = edades;
+        this.LugarNav = lugar;
+        this.FechaNav = fecha;
+        this.dato = dato;
+    }
+
     [Key]
     public Int32 idestadistica {get; set;}
 
-    //public int cobertura { get; set; }
-    [ForeignKey("cobertura")]
-    public required Cobertura Cobertura { get; set; }
+    public int cobertura { get; set; }
+    [ForeignKey(nameof(cobertura))]
+    public virtual Cobertura CoberturaNav { get; set; }
 
-    //public int categoria { get; set; }
-    [ForeignKey("categoria")]
-    public required Categoria Categoria{ get; set; }
+    public int categoria { get; set; }
+    [ForeignKey(nameof(categoria))]
+    public virtual Categoria CategoriaNav{ get; set; }
 
-    //public int edades { get; set; }
-    [ForeignKey("edades")]
-    public required Edades Edades { get; set; }
+    public int edades { get; set; }
+    [ForeignKey(nameof(edades))]
+    public virtual Edades EdadesNav { get; set; }
 
-    //public int lugar { get; set; }
-    [ForeignKey("lugar")]
-    public required Lugar Lugar { get; set; }
+    public int lugar { get; set; }
+    [ForeignKey(nameof(lugar))]
+    public virtual Lugar LugarNav { get; set; }
 
-    //public int fecha { get; set; }
-    [ForeignKey("fecha")]
-    public required Fecha Fecha { get; set; }
+    public int fecha { get; set; }
+    [ForeignKey(nameof(fecha))]
+    public virtual Fecha FechaNav { get; set; }
 
-    public required float dato { get; set; }
+    [Column(TypeName = "DECIMAL(9,1)")]
+    public  float dato { get; set; }
 
 }

@@ -41,4 +41,9 @@ public class FechaController:ControllerBase{
         return await _operations.DeleteFecha(id);
     }
 
+    [HttpDelete]
+    public async Task<Boolean> Delete([FromBody] Fecha fecha){
+        return await _operations.DeleteFecha(fecha);
+    }
+
 }

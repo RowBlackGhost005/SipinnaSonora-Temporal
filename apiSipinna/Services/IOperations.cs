@@ -47,13 +47,15 @@ public interface IOperations{
 
     #region Fecha
         public Task<Fecha> ReadFecha(int id);
+        public Task<Fecha> ReadFecha(Fecha fecha); 
         public Task<Boolean> UpdateFecha(Fecha fecha);
-        public Task<Boolean> DeleteFecha(int id);
         public Task<Boolean> DeleteFecha(Fecha fecha);
+        public Task<Boolean> DeleteFecha(int id);
     #endregion
 
     #region Lugar
         public Task<Lugar> ReadLugar(int id);
+        public Task<Lugar> ReadLugar(Lugar lugar);
         public Task<Boolean> UpdateLugar(Lugar lugar);
         public Task<Boolean> DeleteLugar(Lugar lugar);
         public Task<Boolean> DeleteLugar(int id);

@@ -51,7 +51,7 @@ namespace apiSipinna.CRUD{
                     await Conexion.SaveChangesAsync();
                     return true;
                 }else{
-                    return false;
+                    throw new Exception($"La categoría con el id {id} no existe en la base de datos.");
                 }
             }catch(Exception e){
                 logger.MostrarExceptionInfo(e);
@@ -70,7 +70,7 @@ namespace apiSipinna.CRUD{
                     await Conexion.SaveChangesAsync();
                     return true;
                 }else{
-                    return false;
+                    throw new Exception($"La cobertura con el id {id} no existe en la base de datos.");
                 }
             }catch(Exception e){
                 logger.MostrarExceptionInfo(e);
@@ -89,7 +89,7 @@ namespace apiSipinna.CRUD{
                     await Conexion.SaveChangesAsync();
                     return true;
                 }else{
-                    return false;
+                    throw new Exception($"El rango de edades con el id {id} no existe en la base de datos");
                 }
             }catch(Exception e){
                 logger.MostrarExceptionInfo(e);
@@ -113,7 +113,7 @@ namespace apiSipinna.CRUD{
                     await Conexion.SaveChangesAsync();
                     return true;
                 }else{
-                    return false;
+                    throw new Exception($"La fecha con el id {id} no existe en la base de datos.");
                 }
             }catch(Exception e){
                 logger.MostrarExceptionInfo(e);
@@ -121,26 +121,82 @@ namespace apiSipinna.CRUD{
             }
         }
 
-        public Task<bool> DeleteFecha(Fecha fecha)
+        public async Task<bool> DeleteFecha(Fecha fecha)
         {
-            throw new NotImplementedException();
+            List<Fecha> fechas;
+            try{
+                fechas = await Conexion.fechaTbl
+                                .Include(e=>e.anio)
+                                .Include(e=>e.mes)
+                                .ToListAsync<Fecha>();
+                if(fechas.Count == 0){
+                    throw new Exception($"La fecha {fecha.mes}/{fecha.anio} ingresada no existe en la base de datos.");
+                }else{
+                    Conexion.fechaTbl.Attach(fechas.FirstOrDefault());
+                    Conexion.fechaTbl.Remove(fechas.FirstOrDefault());
+                    await Conexion.SaveChangesAsync();
+                    return true;
+                }
+            }catch(Exception e){
+                logger.MostrarExceptionInfo(e);
+                return false;
+            }
         }
 
-        public Task<bool> DeleteLugar(Lugar lugar)
+        public async Task<bool> DeleteLugar(Lugar lugar)
         {
-            throw new NotImplementedException();
+            List<Lugar> lugares;
+            try{
+                lugares = await Conexion.lugarTbl.Include(e=>e.entidad).ToListAsync<Lugar>();
+                if(lugares.Count == 0){
+                    throw new Exception($"El lugar {lugar.entidad} no existe en la base de datos.");
+                }else{
+                    Conexion.lugarTbl.Attach(lugares.FirstOrDefault());
+                    Conexion.lugarTbl.Remove(lugares.FirstOrDefault());
+                    await Conexion.SaveChangesAsync();
+                    return true;
+                }
+            }catch(Exception e){
+                logger.MostrarExceptionInfo(e);
+                return false;
+            }
         }
 
-        public Task<bool> DeleteLugar(int id)
+        public async Task<bool> DeleteLugar(int id)
         {
-            throw new NotImplementedException();
+            Lugar lugar;
+            try{
+                lugar = await Conexion.lugarTbl.FindAsync(id);
+                if(lugar != null){
+                    Conexion.lugarTbl.Attach(lugar);
+                    Conexion.lugarTbl.Remove(lugar);
+                    await Conexion.SaveChangesAsync();
+                    return true;
+                }else{
+                    throw new Exception($"El lugar con el id {id} no existe en la base de datos.");
+                }
+            }catch(Exception e){
+                logger.MostrarExceptionInfo(e);
+                return false;
+            }
         }
 
         public async Task<Categoria> ReadCategoria(int id){
-            if(id<=0){
+            if(id <= 0){
                 throw new Exception("'id' no puede ser igual o menor que '0'");
             }else{
-                return await Conexion.categoriaTbl.FindAsync(id);
+                Categoria cat;
+                try{
+                    cat = await Conexion.categoriaTbl.FindAsync(id);
+                    if(cat != null){
+                        return cat;
+                    }else{
+                        throw new Exception($"La categoria con el id {id} no existe en la base de datos.");
+                    }
+                }catch(Exception e){
+                    logger.MostrarExceptionInfo(e);
+                    return null;
+                }
             }
         }
 
@@ -149,7 +205,18 @@ namespace apiSipinna.CRUD{
             if(id <= 0){
                 throw new Exception("'id' no puede ser igual o menor que '0'");
             }else{
-                return await Conexion.coberturaTbl.FindAsync(id);
+                Cobertura cobertura;
+                try{
+                    cobertura = await Conexion.coberturaTbl.FindAsync(id);
+                    if(cobertura != null){
+                        return cobertura;
+                    }else{
+                        throw new Exception($"La cobertura con el id {id} no existe en la base de datos.");
+                    }
+                }catch(Exception e){
+                    logger.MostrarExceptionInfo(e);
+                    return null;
+                }
             }
         }
 
@@ -158,13 +225,24 @@ namespace apiSipinna.CRUD{
             if(id <= 0){
                 throw new Exception("'id' no puede ser igual o menor que '0'");
             }else{
-                return await Conexion.edadesTbl.FindAsync(id);
+                Edades edades;
+                try{
+                    edades = await Conexion.edadesTbl.FindAsync(id);
+                    if(edades != null){
+                        return edades;
+                    }else{
+                        throw new Exception($"El rango de edades con el id {id} no existe en la base de datos.");
+                    }
+                }catch(Exception e){
+                    logger.MostrarExceptionInfo(e);
+                    return null;
+                }
             }
         }
 
         public Task<Estadistica> ReadEstadistica(int id)
         {
-            throw new NotImplementedException();
+            throw new Exception("Not implemented yet");
         }
 
         public async Task<Fecha> ReadFecha(int id)
@@ -172,13 +250,67 @@ namespace apiSipinna.CRUD{
             if(id <= 0){
                 throw new Exception("'id' no puede ser igual o menor que '0'");
             }else{
-                return await Conexion.fechaTbl.FindAsync(id);
+                Fecha fecha;
+                try{
+                    fecha = await Conexion.fechaTbl.FindAsync(id);
+                    if(fecha != null){
+                        return fecha;
+                    }else{
+                        throw new Exception($"La fecha con el id {id} no existe en la base de datos.");
+                    }
+                }catch(Exception e){
+                    logger.MostrarExceptionInfo(e);
+                    return null;
+                }
             }
         }
 
-        public Task<Lugar> ReadLugar(int id)
+        public async Task<Fecha> ReadFecha(Fecha fecha)
         {
-            throw new NotImplementedException();
+            if(fecha.idfecha <= 0){
+                throw new Exception("'id' no puede ser igual o menor que '0'");
+            }else{
+                List<Fecha> fechas;
+                try{
+                    fechas = await Conexion.fechaTbl
+                                        .Include(x => x.mes)
+                                        .Include(x => x.anio)
+                                        .ToListAsync<Fecha>();
+                    if(fechas.Count() == 0){
+                        throw new Exception($"La fecha {fecha.mes}/{fecha.anio} no está en la base de datos");
+                    }else{
+                        return fechas.FirstOrDefault<Fecha>();
+                    }
+                }catch(Exception e){
+                    logger.MostrarExceptionInfo(e);
+                    return null;
+                }
+            }
+        }
+
+        public async Task<Lugar> ReadLugar(int id)
+        {
+            if(id <= 0){
+                throw new Exception("'id' no puede ser igual o menor que '0'");
+            }else{
+                return await Conexion.lugarTbl.FindAsync(id);
+            }
+        }
+
+        public async Task<Lugar> ReadLugar(Lugar lugar)
+        {
+            List<Lugar> lugares;
+            try{
+                lugares = await Conexion.lugarTbl.Include(e=>e.entidad).ToListAsync<Lugar>();
+                if(lugares.Count == 0){
+                    throw new Exception($"El lugar {lugar.entidad} no existe en la base de datos.");
+                }else{
+                    return lugares.FirstOrDefault<Lugar>();
+                }
+            }catch(Exception e){
+                logger.MostrarExceptionInfo(e);
+                return null;
+            }
         }
 
         public async Task<bool> UpdateCategoria(Categoria cat){
@@ -261,9 +393,22 @@ namespace apiSipinna.CRUD{
             }
         }
 
-        public Task<bool> UpdateLugar(Lugar lugar)
+        public async Task<bool> UpdateLugar(Lugar lugar)
         {
-            throw new NotImplementedException();
+            Lugar row;
+            try{
+                row = await ReadLugar(lugar.idLugar);
+                if(row != null){
+                    row.entidad = "" != lugar.entidad ? lugar.entidad : row.entidad;
+                    await Conexion.SaveChangesAsync();
+                    return true;
+                }else{
+                    return false;
+                }
+            }catch(Exception e){
+                logger.MostrarExceptionInfo(e);
+                return false;
+            }
         }
     }
 

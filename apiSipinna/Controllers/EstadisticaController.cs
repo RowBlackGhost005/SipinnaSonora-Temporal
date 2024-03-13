@@ -239,7 +239,7 @@ namespace apiSipinna.Controllers
             return _context.estadisticaTbl.Any(e => e.idestadistica == id);
         }
 
-        // GET: api/Estadistica
+        // POST: API/Estadistica/xls
         [HttpPost]
         [Route("xls")]
         public async Task<IActionResult> SaveXlsEstadisticas([FromForm] IFormFile xls)

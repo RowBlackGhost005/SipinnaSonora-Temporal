@@ -49,7 +49,7 @@ using (var serviceScope = app.Services.CreateScope())
 }
 
 //CORS
-app.UseCors();
+app.UseCors(allowLocalHost);
 //
 
 // Configure the HTTP request pipeline.
@@ -59,7 +59,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

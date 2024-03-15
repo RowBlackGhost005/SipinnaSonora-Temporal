@@ -49,4 +49,9 @@ public class Estadistica{
     [Column(TypeName = "DECIMAL(9,1)")]
     public  float dato { get; set; }
 
+    public override string ToString()
+    {
+        return $"ID: {idestadistica}, Cobertura: {CoberturaNav}, Categoria: {CategoriaNav}, Edades: {EdadesNav}, Lugar: {LugarNav}, Fecha: {FechaNav}, Dato: {dato}";
+    }
+
 }

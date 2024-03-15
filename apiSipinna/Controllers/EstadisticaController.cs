@@ -62,38 +62,36 @@ namespace apiSipinna.Controllers
             return estadistica;
         }
 
-        /*
+        
         // PUT: api/Estadistica/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutEstadistica(int id, Estadistica estadistica)
+        
+        [HttpPost]
+        [Route("actualizar")]
+        public async Task<IActionResult> PostEstadistica([FromBody] EstadisticaPost estadisticaDto)
         {
-            if (id != estadistica.idestadistica)
-            {
-                return BadRequest();
-            }
+            Categoria categoria = new Categoria(0,"Proteccion","Trabajo","Promedio de horas que trabajan las niñas, niños y adolescentes");
+            Cobertura cobertura = new Cobertura(0,"Nacional","Total");
+            Lugar lugar = new Lugar(0,"Sonora");
+            Edades edades = new Edades(0,"5-7");
+            Fecha fecha = new Fecha(0,2017,"Febrero");
 
-            _context.Entry(estadistica).State = EntityState.Modified;
+            Estadistica estadistica = new Estadistica(0,cobertura,categoria,edades,lugar,fecha,4350.0f);
+            Estadistica estadistica2 = new Estadistica(0,cobertura,categoria,edades,lugar,fecha,4350.0f);
+            Estadistica estadistica3 = new Estadistica(0,cobertura,categoria,edades,lugar,fecha,4350.0f);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EstadisticaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var estadistics = new List<Estadistica>(){
+                estadistica,
+                estadistica2,
+                estadistica3
+            };
+  
+            await estadisticaDAO.actualizarIndicador(estadistics);
 
-            return NoContent();
+            return Ok("se actualizo con exito los datos");
+
+            
         }
-        */
 
         // POST: api/Estadistica
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -159,7 +157,7 @@ namespace apiSipinna.Controllers
                 
  
                 await estadisticaDAO.guardarArreglo(estadistics);
-
+                
                 return Ok("Datos guardados con exito");
             }
             catch (Exception ex)

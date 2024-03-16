@@ -74,8 +74,6 @@ public class EstadisticaDAO{
             try
             {
 
-               using var transaction = _context.Database.BeginTransaction(); 
-
                foreach (Estadistica element in estadistica)
                {
 
@@ -129,8 +127,6 @@ public class EstadisticaDAO{
                 await _context.SaveChangesAsync();                   
                }
 
-                transaction.Commit();
-
                 return "transaccion completada";
             }
             catch (Exception ex)
@@ -149,6 +145,23 @@ public class EstadisticaDAO{
                 .Include(e => e.EdadesNav)
                 .Include(e => e.LugarNav)
                 .Include(e => e.FechaNav)
+                .ToListAsync();
+            }catch(Exception ex){
+                throw new InvalidOperationException(ex.Message);
+            }
+
+        }
+
+        public async Task<List<Estadistica>> getEstadisticaIndicadorFecha(string indicador, int anio)
+        {
+            try{
+              return await _context.estadisticaTbl
+                .Include(e => e.CategoriaNav)
+                .Include(e => e.CoberturaNav)
+                .Include(e => e.EdadesNav)
+                .Include(e => e.LugarNav)
+                .Include(e => e.FechaNav)
+                .Where(e => e.CategoriaNav.indicador == indicador && e.FechaNav.anio == anio)
                 .ToListAsync();
             }catch(Exception ex){
                 throw new InvalidOperationException(ex.Message);
@@ -184,6 +197,50 @@ public class EstadisticaDAO{
                 throw new InvalidOperationException(ex.Message);
             }
 
+        }
+
+        public async Task<string> eliminarIndicador(List<Estadistica> estadistica){
+            try{
+
+                foreach(var item in estadistica)
+                {
+                    _context.estadisticaTbl.Remove(item);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return "se elimino";
+
+            }catch(Exception ex){
+                throw new InvalidOperationException(ex.Message);
+            }
+        }
+
+        public async Task<string> actualizarIndicador(List<Estadistica> estadisticas){
+
+            var estadisticaLista = await getEstadisticaIndicadorFecha("Promedio de horas que trabajan las niñas, niños y adolescentes",2017);
+
+            if (estadisticaLista.Count == 0)
+            {
+                Console.WriteLine("no hay estadisticas con ese indicador y fecha");
+                return "no hay estadisticas con los parametros recibidos"; 
+            }
+
+            using var transaction = _context.Database.BeginTransaction();
+
+            Categoria categoria = new Categoria(0,"Proteccion","Trabajo","Promedio de horas que trabajan las niñas, niños y adolescentes");
+            Cobertura cobertura = new Cobertura(0,"Nacional","Total");
+            Lugar lugar = new Lugar(0,"Sonora");
+            Edades edades = new Edades(0,"5-7");
+            Fecha fecha = new Fecha(0,2017,"Febrero");
+
+            var cadena = await eliminarIndicador(estadisticaLista);
+
+            await guardarArreglo(estadisticas);
+
+            transaction.Commit();
+
+            return "se actualizo con exito los datos";
         }
 
         

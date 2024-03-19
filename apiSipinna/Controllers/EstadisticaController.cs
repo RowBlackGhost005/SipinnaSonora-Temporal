@@ -139,11 +139,11 @@ namespace apiSipinna.Controllers
             {
                 //dummy arreglo de estadisticas
                 
-                Categoria categoria = new Categoria(0,"Proteccion","Trabajo","Promedio de horas que trabajan las niñas, niños y adolescentes");
-                Cobertura cobertura = new Cobertura(0,"Nacional","Total");
-                Lugar lugar = new Lugar(0,"Sonora");
-                Edades edades = new Edades(0,"5-7");
-                Fecha fecha = new Fecha(0,2017,"Febrero");
+                Categoria categoria = new Categoria(0,"Proteccion","Trabajo","Promedio de horas libres");
+                Cobertura cobertura = new Cobertura(0,"Estatal","Hombre");
+                Lugar lugar = new Lugar(0,"nuevoEstado");
+                Edades edades = new Edades(0,"5-10");
+                Fecha fecha = new Fecha(0,2018,"Febrero");
 
                 Estadistica estadistica = new Estadistica(0,cobertura,categoria,edades,lugar,fecha,4350.0f);
                 Estadistica estadistica2 = new Estadistica(0,cobertura,categoria,edades,lugar,fecha,4350.0f);

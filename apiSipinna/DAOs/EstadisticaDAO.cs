@@ -76,44 +76,36 @@ public class EstadisticaDAO{
 
                foreach (Estadistica element in estadistica)
                {
-
-                var indicador = element.CategoriaNav.indicador;
-                var alcance = element.CoberturaNav.alcance;
-                var poblacion = element.CoberturaNav.poblacion;
-                var entidad = element.LugarNav.entidad;
-                var rangoEdades = element.EdadesNav.rangoEdades;
-                var anio = element.FechaNav.anio;
-                var mes = element.FechaNav.mes;
                 
-                var categoria = _context.categoriaTbl.FirstOrDefault(a => a.indicador == indicador);
+                var categoria = _context.categoriaTbl.FirstOrDefault(a => a.indicador == element.CategoriaNav.indicador);
                 if (categoria == null)
                 {
-                    throw new InvalidOperationException("No se encontro");
+                    categoria = new Categoria(0,element.CategoriaNav.dominio,element.CategoriaNav.categoria,element.CategoriaNav.indicador);
                 }
 
                 
-                var cobertura = _context.coberturaTbl.FirstOrDefault(b => b.alcance == alcance && b.poblacion == poblacion);
+                var cobertura = _context.coberturaTbl.FirstOrDefault(b => b.alcance == element.CoberturaNav.alcance && b.poblacion == element.CoberturaNav.poblacion);
                 if (cobertura == null)
                 {
-                    throw new InvalidOperationException("No se encontro");
+                    cobertura = new Cobertura(0,element.CoberturaNav.alcance,element.CoberturaNav.poblacion);
                 }
 
-                var lugar = _context.lugarTbl.FirstOrDefault(b => b.entidad == entidad);
+                var lugar = _context.lugarTbl.FirstOrDefault(b => b.entidad == element.LugarNav.entidad);
                 if (lugar == null)
                 {
-                    throw new InvalidOperationException("No se encontro");
+                    lugar = new Lugar(0,element.LugarNav.entidad);
                 }
 
-                var edades = _context.edadesTbl.FirstOrDefault(b => b.rangoEdades == rangoEdades);
+                var edades = _context.edadesTbl.FirstOrDefault(b => b.rangoEdades == element.EdadesNav.rangoEdades);
                 if (edades == null)
                 {
-                    throw new InvalidOperationException("No se encontro");
+                    edades = new Edades(0,element.EdadesNav.rangoEdades);
                 }
 
-                var fecha = _context.fechaTbl.FirstOrDefault(b => b.anio == anio && b.mes == mes);
+                var fecha = _context.fechaTbl.FirstOrDefault(b => b.anio == element.FechaNav.anio && b.mes == element.FechaNav.mes);
                 if (fecha == null)
                 {
-                    throw new InvalidOperationException("No se encontro");
+                    fecha = new Fecha(0,element.FechaNav.anio,element.FechaNav.mes);
                 }
 
                element.CategoriaNav = categoria;

@@ -8,10 +8,10 @@ namespace apiSipinna.Modules.XlsParser
     public class Data
     {
 
-        private String entidad {get; set;}
-        private String edades {get; set;}        
-        private String poblacion {get; set;}
-        private float dato {get; set;}
+        public String entidad {get; set;}
+        public String edades {get; set;}        
+        public String poblacion {get; set;}
+        public float dato {get; set;}
 
         public Data(String entidad, String edades, String poblacion, float dato){
             this.entidad = entidad;

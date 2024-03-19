@@ -264,11 +264,7 @@ public class XlsParser
             }
             catch(Exception e)
             {
-                Console.WriteLine(e.Message);
                 throw;
-            }
-            finally{
-                valorCelda = -1;
             }
             
 

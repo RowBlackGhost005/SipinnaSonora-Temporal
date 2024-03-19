@@ -38,7 +38,7 @@ public class XlsTest{
         }
         */
 
-        foreach(var item in xlsParser.GetStatisticData())
+        foreach(var item in xlsParser.GetDatosEstadisticos())
         {
             Console.WriteLine(item);
         }

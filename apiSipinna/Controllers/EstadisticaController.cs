@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using apiSipinna.Models;
 using apiSipinna.Modules.XlsParser;
-using apiSipinna.Services.ArchivosEstadisticos;
 
 
 namespace apiSipinna.Controllers
@@ -238,15 +237,10 @@ namespace apiSipinna.Controllers
             return _context.estadisticaTbl.Any(e => e.idestadistica == id);
         }
 
-        /// <summary>
-        /// Recibe un archivo .xls y almacena sus contenidos dentro de la base de datos.
-        /// Ruta: API/Estadistica/xls
-        /// </summary>
-        /// <param name="xls">Archivo .xls</param>
-        /// <returns></returns>
+        // POST: API/Estadistica/xls
         [HttpPost]
         [Route("xls")]
-        public async Task<IActionResult> PostArchivoXls([FromForm] IFormFile xls, [FromForm] string dominio, [FromForm] string? categoria, [FromForm] string indicador, [FromForm] string anio)
+        public async Task<IActionResult> SaveXlsEstadisticas([FromForm] IFormFile xls)
         {
             try{
 
@@ -257,17 +251,19 @@ namespace apiSipinna.Controllers
                 {
                     if(stream != null){
 
-                        XlsParser xlsParser= new XlsParser(stream);
+                        Console.WriteLine("Parsing File");
+                        XlsParser xlsParser = new XlsParser(stream);
 
-                        ArchivosEstadisticos archivos = new ArchivosEstadisticos(estadisticaDAO);
+                        foreach(var item in xlsParser.GetStatisticData())
+                        {
+                            //TODO: CALL DAO
+                            Console.WriteLine(item);
+                        }
 
-                        await archivos.GuardarEstadisticas(xlsParser, dominio, categoria ?? "", indicador, anio);
                     }else{
                         return BadRequest();
-                    }
+                    }  
                 }
-
-                
     
                 return Ok(); 
 

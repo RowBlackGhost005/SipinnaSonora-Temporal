@@ -259,15 +259,11 @@ public class XlsParser
 
             float valorCelda; 
             
-            Console.WriteLine(tabla[row][columnaActual].ToString());
-
             try{
                 valorCelda = CheckValorCelda(tabla[row][columnaActual].ToString());
             }
             catch(Exception e)
             {
-                Console.WriteLine(e.Message);
-                valorCelda = -1;
                 throw;
             }
             

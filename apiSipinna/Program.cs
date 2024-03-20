@@ -1,7 +1,7 @@
 using apiSipinna.Models;
 using Microsoft.EntityFrameworkCore;
 using apiSipinna.CRUD;
-
+using apiSipinna.Services.ArchivosEstadisticos;
 
 //XLS Reader Required
 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
@@ -33,7 +33,8 @@ builder.Services.AddDbContext<Conexiones>(opt =>
 //builder.services.AddScoped<EstadisticaDAO>();    
 
 builder.Services.AddTransient<IOperations, Operations>();
-
+builder.Services.AddTransient<ArchivosEstadisticos>();
+builder.Services.AddTransient<EstadisticaDAO>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

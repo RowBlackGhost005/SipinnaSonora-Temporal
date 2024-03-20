@@ -9,22 +9,20 @@ using apiSipinna.Models;
 using apiSipinna.Modules.XlsParser;
 using apiSipinna.Services.ArchivosEstadisticos;
 
-
 namespace apiSipinna.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class EstadisticaController : ControllerBase
     {
-        private readonly Conexiones _context;
-        private readonly EstadisticaDAO estadisticaDAO;
-        public EstadisticaController(Conexiones context)
+        private readonly ArchivosEstadisticos archivos;
+        public EstadisticaController(ArchivosEstadisticos _archivos)
         {
-            _context = context;
-            estadisticaDAO = new EstadisticaDAO(_context);
+            archivos = _archivos;
         }
 
         // GET: api/Estadistica
+        /*
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Estadistica>>> GetestadisticaTbl()
         {
@@ -39,7 +37,9 @@ namespace apiSipinna.Controllers
             }
 
         }
+        */
 
+        /*
         [HttpGet]
         [Route("datos")]
         public async Task<ActionResult<IEnumerable<EstadisticaConsulta>>> GetestadisticasDatos()
@@ -62,11 +62,13 @@ namespace apiSipinna.Controllers
 
             return estadistica;
         }
+        */
 
         
         // PUT: api/Estadistica/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         
+        /*
         [HttpPost]
         [Route("actualizar")]
         public async Task<IActionResult> PostEstadistica([FromBody] EstadisticaPost estadisticaDto)
@@ -93,6 +95,7 @@ namespace apiSipinna.Controllers
 
             
         }
+        */
 
         // POST: api/Estadistica
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -107,6 +110,7 @@ namespace apiSipinna.Controllers
         }
         */
 
+        /*
         [HttpPost]
         public async Task<ActionResult<Estadistica>> Post([FromBody] EstadisticaPost estadisticaDto)
         {
@@ -129,9 +133,10 @@ namespace apiSipinna.Controllers
             {
                 return StatusCode(500, $"Error interno del servidor: {ex.Message}");
             }
-        }        
+        } 
+        */       
 
-
+        /*
         [HttpPost]
         [Route("transaccion")]
         public async Task<ActionResult<Estadistica>> Post([FromBody] EstadisticaPost[] estadisticaDto)
@@ -232,11 +237,13 @@ namespace apiSipinna.Controllers
             return NoContent();
         }
         */
-
+        
+        /*
         private bool EstadisticaExists(int id)
         {
             return _context.estadisticaTbl.Any(e => e.idestadistica == id);
         }
+        */
 
         /// <summary>
         /// Recibe un archivo .xls y almacena sus contenidos dentro de la base de datos.
@@ -258,8 +265,6 @@ namespace apiSipinna.Controllers
                     if(stream != null){
 
                         XlsParser xlsParser= new XlsParser(stream);
-
-                        ArchivosEstadisticos archivos = new ArchivosEstadisticos(estadisticaDAO);
 
                         await archivos.GuardarEstadisticas(xlsParser, dominio, categoria ?? "", indicador, anio);
                     }else{

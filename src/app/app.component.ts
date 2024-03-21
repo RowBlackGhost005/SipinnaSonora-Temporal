@@ -4,11 +4,12 @@ import { HeaderComponent } from './core/components/header/header.component';
 import { FooterComponent } from './core/components/footer/footer.component';
 import { ApiService } from './services/api.service';
 import { ITable } from './core/models/table.model';
+import { BarChartComponent } from './core/components/bar-chart/bar-chart.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,HeaderComponent,FooterComponent],
+  imports: [RouterOutlet,HeaderComponent,FooterComponent, BarChartComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

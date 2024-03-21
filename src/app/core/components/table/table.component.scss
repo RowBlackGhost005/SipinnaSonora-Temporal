@@ -1,0 +1,29 @@
+.table-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+table thead th {
+    background-color: #960E53;
+    color: white;
+}
+
+.custom-link {
+    color: black;
+    background-color: white;
+
+    &.active {
+        color: white;
+        background-color: #960E53;
+    }
+}
+
+h4 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: large;
+    color: #410324;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
